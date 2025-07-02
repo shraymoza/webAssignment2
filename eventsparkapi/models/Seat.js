@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const seatSchema = new mongoose.Schema({
-    _id: String,                     // sea_*****
+    _id: String,
     eventId: { type: String, ref: 'Event', required: true, index: true },
     row: Number,
     col: Number,

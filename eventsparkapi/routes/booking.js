@@ -85,6 +85,7 @@ router.post(
         }
     },
 );
+
 /* ---------- GET /bookings/:bookingId (owner-only) ---------- */
     router.get(
           '/bookings/:bookingId',
@@ -123,4 +124,5 @@ router.post(
             } catch (e) { next(e); }
       },
 );
+
 export default router;
