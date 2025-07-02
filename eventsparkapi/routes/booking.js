@@ -85,5 +85,42 @@ router.post(
         }
     },
 );
+/* ---------- GET /bookings/:bookingId (owner-only) ---------- */
+    router.get(
+          '/bookings/:bookingId',
+          auth('user'),
+          async (req, res, next) => {
+        try {
+              const booking = await Booking.findById(req.params.bookingId).lean();
+              if (!booking) return res.status(404).json({ message: 'Not found' });
+              if (booking.userId !== req.user.id) {
+                    return res.status(403).json({ message: 'Forbidden' });
+                  }
+              res.json(booking);
+            } catch (e) { next(e); }
+      },
+);
 
+    /* ---------- DELETE /bookings/:bookingId (cancel) ---------- */
+        router.delete(
+              '/bookings/:bookingId',
+              auth('user'),
+              async (req, res, next) => {
+        try {
+              const booking = await Booking.findById(req.params.bookingId);
+              if (!booking)  return res.status(404).json({ message: 'Not found' });
+              if (booking.userId !== req.user.id) {
+                    return res.status(403).json({ message: 'Forbidden' });
+                  }
+        
+                  // release seats
+                      await Seat.updateMany(
+                            { _id: { $in: booking.seatIds } },
+                            { status: 'AVAILABLE', heldBy: null },
+                          );
+              await booking.deleteOne();
+              res.sendStatus(204);
+            } catch (e) { next(e); }
+      },
+);
 export default router;

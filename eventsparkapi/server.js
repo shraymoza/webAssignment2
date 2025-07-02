@@ -18,5 +18,5 @@ app.use((err, _req, res, _next) => {
 });
 
 await mongoose.connect(process.env.MONGODB_URI);
-const PORT = process.env.PORT || 3000;   
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API up on :${PORT}`));
